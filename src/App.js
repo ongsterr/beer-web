@@ -21,7 +21,6 @@ function parseBeer(beer) {
   }
 }
 
-
 class App extends Component {
 
   state = {
@@ -44,6 +43,20 @@ class App extends Component {
       .catch(err => console.error(err))
   }
 
+  deleteBeer = (id) => {
+    const beerURL = `http://localhost:3000/beers/${id}`
+    fetch(beerURL, {method: 'DELETE'})
+      .then(res => res.json())
+      .then(() => {
+        this.setState(prevState => {
+          return {
+            beers: prevState.beers.filter(beer => beer.id !== id)
+          }
+        })
+      })
+      .catch(err => console.error(err))
+  }
+
 
   render() {
 
@@ -52,7 +65,7 @@ class App extends Component {
     }   
     
     const beers = this.state.beers.map(beer => {
-      return <BeerCard key={beer.id} {...beer} />
+      return <BeerCard handleDelete={this.deleteBeer} key={beer.id} {...beer} />
     })
 
     return (
@@ -64,7 +77,7 @@ class App extends Component {
 
           {beers}
         </div>
-        
+
       </div>
     );
   }
